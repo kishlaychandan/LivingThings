@@ -1,11 +1,9 @@
-import React, { useState } from "react";
-import Auth from "../components/Auth";
-import Dashboard from "./Dashboard";
+// src/pages/Login.jsx
+import React, { useState } from 'react';
+import Auth from '../components/Auth';
 
-const Login = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  return isAuthenticated ? <Dashboard /> : <Auth setIsAuthenticated={setIsAuthenticated} />;
+const Login = ({ setIsAuthenticated }) => {
+  return <Auth isLogin={true} setIsAuthenticated={setIsAuthenticated} />;
 };
 
 export default Login;

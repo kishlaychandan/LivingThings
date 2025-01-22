@@ -9,7 +9,7 @@ const protect = (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1]; // Extract token from 'Bearer <token>'
 
-      const decoded = jwt.verify(token, 'your_jwt_secret');  // Verify JWT token
+      const decoded = jwt.verify(token, process.env.SECRET);  // Verify JWT token
       req.user = decoded; // Attach user data to the request object
 
       next(); // Call next() to move to the next middleware/route

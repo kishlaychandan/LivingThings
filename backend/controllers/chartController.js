@@ -46,8 +46,9 @@ exports.importChartData = async (req, res) => {
 // Fetch Chart Data
 exports.getChartData = async (req, res) => {
   try {
+    console.log("getChartData", req.query);
+    
     const { startDate, endDate, algoStatus } = req.query;
-
     const filter = {};
     if (startDate && endDate) {
       filter.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
