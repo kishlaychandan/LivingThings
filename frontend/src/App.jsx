@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import Home from './components/Home';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,8 +16,10 @@ const App = () => {
       <Router>
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/register" element={<Register setIsAuthenticated={setIsAuthenticated} />} />
+
           
           {/* Protected Routes */}
           <Route

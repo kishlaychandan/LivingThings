@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, registerUser } from '../services/api';
+import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 
 const Auth = ({ setIsAuthenticated }) => {
-  const [isLogin, setIsLogin] = useState(true); // State to toggle between Login and Register
+  const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    username: '', // Username required only for registration
+    username: '',
   });
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -48,34 +49,47 @@ const Auth = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
-      {/* Toggle Button */}
+    <div className="max-w-md mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
+      {/* Toggle Login/Register */}
       <div className="flex justify-center mb-6">
         <button
-          className={`px-4 py-2 font-semibold rounded-l-lg ${
-            isLogin ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-          }`}
+          className={`px-6 py-2 font-semibold transition-colors ${
+            isLogin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
+          } rounded-l-lg focus:outline-none hover:bg-blue-500`}
           onClick={() => setIsLogin(true)}
         >
           Login
         </button>
         <button
-          className={`px-4 py-2 font-semibold rounded-r-lg ${
-            !isLogin ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-          }`}
+          className={`px-6 py-2 font-semibold transition-colors ${
+            !isLogin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
+          } rounded-r-lg focus:outline-none hover:bg-blue-500`}
           onClick={() => setIsLogin(false)}
         >
           Register
         </button>
       </div>
 
-      <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
-        {isLogin ? 'Login' : 'Register'}
+      {/* Title */}
+      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+        {isLogin ? 'Login to Your Account' : 'Create an Account'}
       </h2>
 
-      {successMessage && <div className="text-green-600 text-center mb-4">{successMessage}</div>}
-      {error && <div className="text-red-600 text-center mb-4">{error}</div>}
+      {/* Success/Error Messages */}
+      {successMessage && (
+        <div className="flex items-center gap-2 p-3 bg-green-100 text-green-700 rounded-lg mb-4">
+          <FaCheckCircle />
+          <span>{successMessage}</span>
+        </div>
+      )}
+      {error && (
+        <div className="flex items-center gap-2 p-3 bg-red-100 text-red-700 rounded-lg mb-4">
+          <FaExclamationCircle />
+          <span>{error}</span>
+        </div>
+      )}
 
+      {/* Form */}
       <form onSubmit={handleSubmit}>
         {!isLogin && (
           <div className="mb-4">
@@ -86,10 +100,10 @@ const Auth = ({ setIsAuthenticated }) => {
               type="text"
               id="username"
               name="username"
-              placeholder="Username"
+              placeholder="Enter your username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
             />
           </div>
         )}
@@ -102,10 +116,10 @@ const Auth = ({ setIsAuthenticated }) => {
             type="email"
             id="email"
             name="email"
-            placeholder="Email"
+            placeholder="Enter your email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
           />
         </div>
 
@@ -117,20 +131,33 @@ const Auth = ({ setIsAuthenticated }) => {
             type="password"
             id="password"
             name="password"
-            placeholder="Password"
+            placeholder="Enter your password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
         >
           {isLogin ? 'Login' : 'Register'}
         </button>
       </form>
+
+      {/* Footer */}
+      <div className="text-center mt-4 text-sm text-gray-500">
+        {isLogin
+          ? "Don't have an account? "
+          : 'Already have an account? '}
+        <span
+          onClick={() => setIsLogin(!isLogin)}
+          className="text-blue-600 cursor-pointer hover:underline"
+        >
+          {isLogin ? 'Register' : 'Login'}
+        </span>
+      </div>
     </div>
   );
 };
