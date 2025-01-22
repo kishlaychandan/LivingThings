@@ -1,15 +1,19 @@
-const ChartData = require('../models/chartData');
+const ChartData = require('../models/chartData'); // ChartData Mongoose model
 
 // Import JSON into MongoDB
 exports.importChartData = async (req, res) => {
+  console.log("i am here");
   const jsonData = req.body; // Ensure your JSON data is in the request body
+  
   try {
+    // Insert the provided JSON data into the MongoDB collection
     await ChartData.insertMany(jsonData);
-    res.status(201).send('Chart data imported successfully');
+    res.status(201).send("Chart data imported successfully");
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Fetch Chart Data
 exports.getChartData = async (req, res) => {
