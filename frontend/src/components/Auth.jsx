@@ -13,6 +13,7 @@ const Auth = ({ setIsAuthenticated }) => {
   });
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false); // State to handle loading
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,9 +24,11 @@ const Auth = ({ setIsAuthenticated }) => {
     e.preventDefault();
     setError('');
     setSuccessMessage('');
+    setLoading(true); // Set loading to true while processing the request
 
     if (!formData.email || !formData.password || (!isLogin && !formData.username)) {
       setError('Please fill out all fields.');
+      setLoading(false); // Stop loading
       return;
     }
 
@@ -46,13 +49,15 @@ const Auth = ({ setIsAuthenticated }) => {
       }
     } catch (error) {
       setError(error.response?.data?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false); // Stop loading after the request is complete
     }
   };
 
   return (
     <>
-    {/* Header */}
-    <header className="flex justify-between items-center p-4 bg-blue-600 text-white">
+      {/* Header */}
+      <header className="flex justify-between items-center p-4 bg-blue-600 text-white">
         {/* Logo */}
         <div className="text-2xl font-bold">
           <Link to="/">Living Thing</Link>
@@ -74,118 +79,125 @@ const Auth = ({ setIsAuthenticated }) => {
           </Link>
         </div>
       </header>
-    <div className="max-w-md mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
-      {/* Toggle Login/Register */}
-      <div className="flex justify-center mb-6">
-        <button
-          className={`px-6 py-2 font-semibold transition-colors ${
-            isLogin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
-          } rounded-l-lg focus:outline-none hover:bg-blue-500`}
-          onClick={() => setIsLogin(true)}
-        >
-          Login
-        </button>
-        <button
-          className={`px-6 py-2 font-semibold transition-colors ${
-            !isLogin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
-          } rounded-r-lg focus:outline-none hover:bg-blue-500`}
-          onClick={() => setIsLogin(false)}
-        >
-          Register
-        </button>
-      </div>
-
-      {/* Title */}
-      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-        {isLogin ? 'Login to Your Account' : 'Create an Account'}
-      </h2>
-
-      {/* Success/Error Messages */}
-      {successMessage && (
-        <div className="flex items-center gap-2 p-3 bg-green-100 text-green-700 rounded-lg mb-4">
-          <FaCheckCircle />
-          <span>{successMessage}</span>
+      <div className="max-w-md mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
+        {/* Toggle Login/Register */}
+        <div className="flex justify-center mb-6">
+          <button
+            className={`px-6 py-2 font-semibold transition-colors ${
+              isLogin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
+            } rounded-l-lg focus:outline-none hover:bg-blue-500`}
+            onClick={() => setIsLogin(true)}
+          >
+            Login
+          </button>
+          <button
+            className={`px-6 py-2 font-semibold transition-colors ${
+              !isLogin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
+            } rounded-r-lg focus:outline-none hover:bg-blue-500`}
+            onClick={() => setIsLogin(false)}
+          >
+            Register
+          </button>
         </div>
-      )}
-      {error && (
-        <div className="flex items-center gap-2 p-3 bg-red-100 text-red-700 rounded-lg mb-4">
-          <FaExclamationCircle />
-          <span>{error}</span>
-        </div>
-      )}
 
-      {/* Form */}
-      <form onSubmit={handleSubmit}>
-        {!isLogin && (
+        {/* Title */}
+        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+          {isLogin ? 'Login to Your Account' : 'Create an Account'}
+        </h2>
+
+        {/* Success/Error Messages */}
+        {successMessage && (
+          <div className="flex items-center gap-2 p-3 bg-green-100 text-green-700 rounded-lg mb-4">
+            <FaCheckCircle />
+            <span>{successMessage}</span>
+          </div>
+        )}
+        {error && (
+          <div className="flex items-center gap-2 p-3 bg-red-100 text-red-700 rounded-lg mb-4">
+            <FaExclamationCircle />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Loading Spinner */}
+        {loading && (
+          <div className="flex items-center justify-center gap-2 p-3 bg-blue-100 text-blue-700 rounded-lg mb-4">
+            <div className="spinner-border animate-spin border-t-2 border-blue-500 rounded-full w-6 h-6"></div>
+            <span>Please wait, Render is taking some time...</span>
+          </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit}>
+          {!isLogin && (
+            <div className="mb-4">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-600">
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                value={formData.username}
+                onChange={handleChange}
+                className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+              />
+            </div>
+          )}
+
           <div className="mb-4">
-            <label htmlFor="username" className="block text-sm font-medium text-gray-600">
-              Username
+            <label htmlFor="email" className="block text-sm font-medium text-gray-600">
+              Email
             </label>
             <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Enter your username"
-              value={formData.username}
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              value={formData.email}
               onChange={handleChange}
               className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
             />
           </div>
-        )}
 
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-600">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
-          />
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-600">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+          >
+            {isLogin ? 'Login' : 'Register'}
+          </button>
+        </form>
+
+        {/* Footer */}
+        <div className="text-center mt-4 text-sm text-gray-500">
+          {isLogin
+            ? "Don't have an account? "
+            : 'Already have an account? '}
+          <span
+            onClick={() => setIsLogin(!isLogin)}
+            className="text-blue-600 cursor-pointer hover:underline"
+          >
+            {isLogin ? 'Register' : 'Login'}
+          </span>
         </div>
-
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-600">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
-        >
-          {isLogin ? 'Login' : 'Register'}
-        </button>
-      </form>
-
-      {/* Footer */}
-      <div className="text-center mt-4 text-sm text-gray-500">
-        {isLogin
-          ? "Don't have an account? "
-          : 'Already have an account? '}
-        <span
-          onClick={() => setIsLogin(!isLogin)}
-          className="text-blue-600 cursor-pointer hover:underline"
-        >
-          {isLogin ? 'Register' : 'Login'}
-        </span>
       </div>
-    </div>
-    {/* Footer */}
-    </>
+  </>
   );
 };
 
