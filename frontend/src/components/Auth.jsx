@@ -185,38 +185,6 @@ const Auth = ({ setIsAuthenticated }) => {
       </div>
     </div>
     {/* Footer */}
-    <footer className="bg-blue-600 text-white py-4 text-center">
-        <p className="text-sm">
-          &copy; {new Date().getFullYear()} Living Thing. All rights reserved.
-        </p>
-        <div className="flex justify-center mt-2">
-          {/* Social Media Links */}
-          <a
-            href="https://facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mx-2 hover:underline"
-          >
-            Facebook
-          </a>
-          <a
-            href="https://twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mx-2 hover:underline"
-          >
-            Twitter
-          </a>
-          <a
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mx-2 hover:underline"
-          >
-            Instagram
-          </a>
-        </div>
-      </footer>
     </>
   );
 };
