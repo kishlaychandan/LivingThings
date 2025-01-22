@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, registerUser } from '../services/api';
 import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Auth = ({ setIsAuthenticated }) => {
   const [isLogin, setIsLogin] = useState(true);
