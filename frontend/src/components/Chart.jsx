@@ -25,7 +25,7 @@ ChartJS.register(
 const Chart = () => {
   const [chartData, setChartData] = useState(null);
   const [filters, setFilters] = useState({
-    startDate: "2024-01-01",
+    startDate: "2023-01-01",
     endDate: "2024-01-31",
     algoStatus: "active",
   });
