@@ -47,19 +47,36 @@ exports.importChartData = async (req, res) => {
 exports.getChartData = async (req, res) => {
   try {
     console.log("getChartData", req.query);
-    
+
+    // Extracting parameters from the query string
     const { startDate, endDate, algoStatus } = req.query;
     const filter = {};
+
+    // Date filtering: Check if both startDate and endDate are provided
     if (startDate && endDate) {
-      filter.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
-    }
-    if (algoStatus) {
-      filter.algo_status = algoStatus;
+      console.log("Filtering by date range");
+      filter.createdAt = { 
+        $gte: new Date(startDate), 
+        $lte: new Date(endDate) 
+      };
     }
 
+    // Filter by algo_status: Convert "active" to 1, otherwise 0
+    if (algoStatus) {
+      console.log("Filtering by algo_status:", algoStatus);
+      filter.algo_status = algoStatus === 'active' ? 1 : 0;
+    }
+
+    console.log("filter object:", filter);
+
+    // Query the database with the filter
     const data = await ChartData.find(filter);
+    console.log("Query result:", data);
+
+    // Send the data as JSON response
     res.status(200).json(data);
   } catch (error) {
+    console.error("Error in getChartData:", error.message);
     res.status(500).json({ error: error.message });
   }
 };

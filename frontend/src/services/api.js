@@ -12,7 +12,6 @@ export const registerUser = async (credentials) => {
   const response = await axios.post(`${API_URL}/api/auth/register`, credentials);
   return response.data;
 };
-
 export const fetchChartData = async (filters = {}) => {
   try {
     const token = localStorage.getItem('token'); // Retrieve the token from local storage
@@ -21,7 +20,7 @@ export const fetchChartData = async (filters = {}) => {
       throw new Error('No token found. Please log in again.');
     }
 
-    // Build query string from the filters object
+    // Build query string dynamically based on filters
     const queryString = new URLSearchParams(filters).toString();
 
     const response = await axios.get(`${API_URL}/api/charts?${queryString}`, {
@@ -36,4 +35,3 @@ export const fetchChartData = async (filters = {}) => {
     throw new Error(error.response?.data?.message || 'Error fetching chart data');
   }
 };
-

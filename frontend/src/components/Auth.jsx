@@ -50,44 +50,73 @@ const Auth = ({ isLogin, setIsAuthenticated }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>{isLogin ? 'Login' : 'Register'}</h2>
+    <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">{isLogin ? 'Login' : 'Register'}</h2>
 
       {/* Display success message */}
-      {successMessage && <div className="success-message">{successMessage}</div>}
-
-      {/* Display error message */}
-      {error && <div className="error-message">{error}</div>}
-
-      {/* Conditionally render username field for registration */}
-      {!isLogin && (
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleChange}
-        />
+      {successMessage && (
+        <div className="text-green-600 text-center mb-4">{successMessage}</div>
       )}
 
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleChange}
-      />
+      {/* Display error message */}
+      {error && (
+        <div className="text-red-600 text-center mb-4">{error}</div>
+      )}
 
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleChange}
-      />
+      <form onSubmit={handleSubmit}>
+        {/* Conditionally render username field for registration */}
+        {!isLogin && (
+          <div className="mb-4">
+            <label htmlFor="username" className="block text-sm font-medium text-gray-600">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Username"
+              value={formData.username}
+              onChange={handleChange}
+              className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+        )}
 
-      <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
-    </form>
+        {/* Email Field */}
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-600">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        {/* Password Field */}
+        <div className="mb-6">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-600">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          {isLogin ? 'Login' : 'Register'}
+        </button>
+      </form>
+    </div>
   );
 };
 
