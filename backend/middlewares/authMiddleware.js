@@ -1,16 +1,26 @@
-const jwt = require("jsonwebtoken");
+// middleware/authMiddleware.js
+const jwt = require('jsonwebtoken');
 
-const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+// Protect middleware to verify JWT tokens
+const protect = (req, res, next) => {
+  let token;
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attach user info to the request object
-    next();
-  } catch (error) {
-    res.status(403).json({ message: "Forbidden: Invalid token" });
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    try {
+      token = req.headers.authorization.split(' ')[1]; // Extract token from 'Bearer <token>'
+
+      const decoded = jwt.verify(token, 'your_jwt_secret');  // Verify JWT token
+      req.user = decoded; // Attach user data to the request object
+
+      next(); // Call next() to move to the next middleware/route
+    } catch (error) {
+      res.status(401).json({ message: 'Not authorized, token failed' });
+    }
+  }
+
+  if (!token) {
+    res.status(401).json({ message: 'Not authorized, no token' });
   }
 };
 
-module.exports = authMiddleware;
+module.exports = { protect };  // Export the middleware properly
