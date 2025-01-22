@@ -12,7 +12,6 @@ import {
   Legend,
 } from "chart.js";
 
-// Register the necessary Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,24 +22,6 @@ ChartJS.register(
   Legend
 );
 
-// Helper function to debounce state updates
-const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    // Cleanup the timeout on value change
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-};
-
 const Chart = () => {
   const [chartData, setChartData] = useState(null);
   const [filters, setFilters] = useState({
@@ -49,35 +30,36 @@ const Chart = () => {
     algoStatus: "active",
   });
 
-  // Debounced filter state
-  const debouncedFilters = useDebounce(filters, 500); // Delay of 500ms
-
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await fetchChartData(debouncedFilters); // Pass debounced filters dynamically
+        const data = await fetchChartData(filters);
         setChartData(data);
       } catch (error) {
         console.error(error.message);
       }
     };
 
-    if (debouncedFilters) {
-      loadData();
-    }
-  }, [debouncedFilters]);
+    loadData();
+  }, [filters]);
 
   const data = chartData
     ? {
         labels: chartData.map((item) =>
-          new Date(item.date).toLocaleDateString()
+          new Date(item.createdAt).toLocaleDateString()
         ),
         datasets: [
           {
-            label: "Energy Consumption (kWh)",
-            data: chartData.map((item) => item.value),
+            label: "Energy Consumed (Saving Mode On)",
+            data: chartData.map((item) => item.energy_savings.us_calc),
             borderColor: "rgba(75, 192, 192, 1)",
             backgroundColor: "rgba(75, 192, 192, 0.2)",
+          },
+          {
+            label: "Energy Consumed (Saving Mode Off)",
+            data: chartData.map((item) => item.energy_savings.ref_kwh),
+            borderColor: "rgba(255, 99, 132, 1)",
+            backgroundColor: "rgba(255, 99, 132, 0.2)",
           },
         ],
       }
@@ -89,7 +71,6 @@ const Chart = () => {
         Energy Consumption Chart
       </h2>
 
-      {/* Filter Section */}
       <div className="flex justify-between mb-6 p-4 border rounded-lg bg-gray-100">
         <div>
           <label className="block text-gray-600 font-medium">Start Date:</label>
@@ -128,7 +109,6 @@ const Chart = () => {
         </div>
       </div>
 
-      {/* Chart */}
       <div className="bg-gray-50 p-4 rounded-lg shadow-md">
         {chartData && <Line data={data} />}
       </div>
