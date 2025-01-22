@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, registerUser } from '../services/api';
 
-const Auth = ({ isLogin, setIsAuthenticated }) => {
+const Auth = ({ setIsAuthenticated }) => {
+  const [isLogin, setIsLogin] = useState(true); // State to toggle between Login and Register
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    username: isLogin ? '' : '', // Username only required for registration
+    username: '', // Username required only for registration
   });
-  const [error, setError] = useState(''); // Error state
-  const [successMessage, setSuccessMessage] = useState(''); // Success state
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -21,7 +22,6 @@ const Auth = ({ isLogin, setIsAuthenticated }) => {
     setError('');
     setSuccessMessage('');
 
-    // Basic frontend validation
     if (!formData.email || !formData.password || (!isLogin && !formData.username)) {
       setError('Please fill out all fields.');
       return;
@@ -32,42 +32,56 @@ const Auth = ({ isLogin, setIsAuthenticated }) => {
         ? await loginUser({ email: formData.email, password: formData.password })
         : await registerUser(formData);
 
-      localStorage.setItem('token', response.token); // Store JWT token
+      localStorage.setItem('token', response.token);
       setIsAuthenticated(true);
 
-      // Success Feedback and Navigation
       if (isLogin) {
         setSuccessMessage('Login successful! Redirecting to dashboard...');
-        navigate('/dashboard'); // Redirect to dashboard
+        navigate('/dashboard');
       } else {
         setSuccessMessage('Registration successful! Redirecting to login page...');
-        navigate('/login'); // Redirect to login page
+        navigate('/login');
       }
     } catch (error) {
-      // Backend provides a message in the response (e.g., "Invalid email or password")
       setError(error.response?.data?.message || 'Something went wrong. Please try again.');
     }
   };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">{isLogin ? 'Login' : 'Register'}</h2>
+      {/* Toggle Button */}
+      <div className="flex justify-center mb-6">
+        <button
+          className={`px-4 py-2 font-semibold rounded-l-lg ${
+            isLogin ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
+          }`}
+          onClick={() => setIsLogin(true)}
+        >
+          Login
+        </button>
+        <button
+          className={`px-4 py-2 font-semibold rounded-r-lg ${
+            !isLogin ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
+          }`}
+          onClick={() => setIsLogin(false)}
+        >
+          Register
+        </button>
+      </div>
 
-      {/* Display success message */}
-      {successMessage && (
-        <div className="text-green-600 text-center mb-4">{successMessage}</div>
-      )}
+      <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
+        {isLogin ? 'Login' : 'Register'}
+      </h2>
 
-      {/* Display error message */}
-      {error && (
-        <div className="text-red-600 text-center mb-4">{error}</div>
-      )}
+      {successMessage && <div className="text-green-600 text-center mb-4">{successMessage}</div>}
+      {error && <div className="text-red-600 text-center mb-4">{error}</div>}
 
       <form onSubmit={handleSubmit}>
-        {/* Conditionally render username field for registration */}
         {!isLogin && (
           <div className="mb-4">
-            <label htmlFor="username" className="block text-sm font-medium text-gray-600">Username</label>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-600">
+              Username
+            </label>
             <input
               type="text"
               id="username"
@@ -80,9 +94,10 @@ const Auth = ({ isLogin, setIsAuthenticated }) => {
           </div>
         )}
 
-        {/* Email Field */}
         <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-600">Email</label>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-600">
+            Email
+          </label>
           <input
             type="email"
             id="email"
@@ -94,9 +109,10 @@ const Auth = ({ isLogin, setIsAuthenticated }) => {
           />
         </div>
 
-        {/* Password Field */}
         <div className="mb-6">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-600">Password</label>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-600">
+            Password
+          </label>
           <input
             type="password"
             id="password"
@@ -108,7 +124,6 @@ const Auth = ({ isLogin, setIsAuthenticated }) => {
           />
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
